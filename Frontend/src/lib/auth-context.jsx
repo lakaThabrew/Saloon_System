@@ -47,40 +47,56 @@ export function AuthProvider({ children }) {
     setAppointments(read(APPTS_KEY, []));
   }, []);
 
+  const API_BASE = "http://localhost:8080/api";
+
   async function register(data) {
-    const users = read(USERS_KEY, []);
-    if (users.some((u) => u.email.toLowerCase() === data.email.toLowerCase())) {
-      throw new Error("An account with that email already exists.");
+    const res = await fetch(`${API_BASE}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    
+    if (!res.ok) {
+      let errorMsg = "Registration failed.";
+      const text = await res.text();
+      if (text) {
+        try {
+          const json = JSON.parse(text);
+          errorMsg = json.message || text;
+        } catch (e) {
+          errorMsg = text;
+        }
+      }
+      throw new Error(errorMsg);
     }
-    const record = {
-      id: crypto.randomUUID(),
-      fullName: data.fullName,
-      email: data.email,
-      phone: data.phone,
-      gender: data.gender,
-      preferences: data.preferences,
-      role: "CUSTOMER",
-      token: issueToken(),
-      password: data.password,
-    };
-    write(USERS_KEY, [...users, record]);
-    const { password: _p, ...session } = record;
+    
+    const session = await res.json();
     write(SESSION_KEY, session);
     setUser(session);
   }
 
   async function login(email, password) {
-    const users = read(USERS_KEY, []);
-    const found = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password,
-    );
-    if (!found) throw new Error("Invalid email or password.");
-    const refreshed = { ...found, token: issueToken() };
-    write(
-      USERS_KEY,
-      users.map((u) => (u.id === refreshed.id ? refreshed : u)),
-    );
-    const { password: _p, ...session } = refreshed;
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    
+    if (!res.ok) {
+      let errorMsg = "Invalid email or password.";
+      const text = await res.text();
+      if (text) {
+        try {
+          const json = JSON.parse(text);
+          errorMsg = json.message || text;
+        } catch (e) {
+          errorMsg = text;
+        }
+      }
+      throw new Error(errorMsg);
+    }
+    
+    const session = await res.json();
     write(SESSION_KEY, session);
     setUser(session);
   }
@@ -92,41 +108,63 @@ export function AuthProvider({ children }) {
 
   async function bookAppointment(req) {
     if (!user) throw new Error("Please sign in to book.");
-    const services = SERVICES.filter((s) => req.serviceIds.includes(s.id));
-    if (services.length === 0) throw new Error("Select at least one service.");
-
-    // Resolve staff + slot from mock slot pool (real backend does this server-side).
-    const staffId = Math.floor(req.slotId / 10000);
-    const staff = STAFF.find((s) => s.id === staffId);
-    if (!staff) throw new Error("Unknown stylist.");
-    // We can't reverse-engineer the date from the id, so require the caller to
-    // pass it through the request in real use. For the mock, we look it up
-    // from the currently-known slot pools cached in memory.
-    const slot = slotCache.get(req.slotId);
-    if (!slot) throw new Error("That slot is no longer available.");
-
-    const appt = {
-      id: crypto.randomUUID(),
-      customerId: user.id,
-      slotId: req.slotId,
-      staffId,
-      staffName: staff.fullName,
-      date: slot.date,
-      startTime: slot.startTime,
-      serviceIds: req.serviceIds,
-      serviceNames: services.map((s) => s.serviceName),
-      totalMinutes: services.reduce((a, s) => a + s.durationMinutes, 0),
-      notes: req.notes,
-      status: "BOOKED",
-      createdAt: new Date().toISOString(),
+    
+    // Add the customerId to the request for the backend
+    const appointmentReq = {
+      ...req,
+      customerId: user.id
     };
-    const next = [...appointments, appt];
+
+    const res = await fetch(`${API_BASE}/appointments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${user.token}`
+      },
+      body: JSON.stringify(appointmentReq),
+    });
+
+    if (!res.ok) {
+      let errorMsg = "Failed to book appointment.";
+      const text = await res.text();
+      if (text) {
+        try {
+          const json = JSON.parse(text);
+          errorMsg = json.message || text;
+        } catch (e) {
+          errorMsg = text;
+        }
+      }
+      throw new Error(errorMsg);
+    }
+
+    const appt = await res.json();
+    
+    // Transform backend appointment response to frontend format
+    const formattedAppt = {
+      id: appt.id,
+      customerId: appt.customer?.id,
+      slotId: appt.slot?.id,
+      staffId: appt.slot?.staff?.id,
+      staffName: appt.slot?.staff?.fullName,
+      date: appt.slot?.date,
+      startTime: appt.slot?.startTime,
+      serviceIds: appt.services?.map(s => s.id) || [],
+      serviceNames: appt.services?.map(s => s.serviceName) || [],
+      totalMinutes: appt.services?.reduce((a, s) => a + s.durationMinutes, 0) || 0,
+      notes: appt.notes,
+      status: appt.status,
+      createdAt: appt.createdAt || new Date().toISOString(),
+    };
+
+    const next = [...appointments, formattedAppt];
     setAppointments(next);
     write(APPTS_KEY, next);
-    return appt;
+    return formattedAppt;
   }
 
   function cancelAppointment(id) {
+    // Currently backend doesn't support cancel, we just do it locally for now
     const next = appointments.map((a) => (a.id === id ? { ...a, status: "CANCELLED" } : a));
     setAppointments(next);
     write(APPTS_KEY, next);
