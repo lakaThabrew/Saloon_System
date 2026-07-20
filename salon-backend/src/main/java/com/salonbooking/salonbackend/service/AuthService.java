@@ -47,7 +47,7 @@ public class AuthService {
         customerRepository.save(customer);
 
         var jwtToken = jwtUtil.generateToken(customer);
-        return new AuthResponse(jwtToken, customer.getRole().name());
+        return new AuthResponse(jwtToken, customer.getRole().name(), customer.getId(), customer.getEmail(), customer.getFullName());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -60,6 +60,6 @@ public class AuthService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         var jwtToken = jwtUtil.generateToken(user);
-        return new AuthResponse(jwtToken, user.getRole().name());
+        return new AuthResponse(jwtToken, user.getRole().name(), user.getId(), user.getEmail(), user.getFullName());
     }
 }
