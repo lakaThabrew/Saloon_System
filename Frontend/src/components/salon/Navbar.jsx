@@ -5,6 +5,7 @@ import {
   LogOut,
   Menu,
   Scissors,
+  ShieldCheck,
   User as UserIcon,
   X,
 } from "lucide-react";
@@ -61,8 +62,7 @@ export function Navbar() {
               <Scissors className="h-4 w-4" />
             </span>
             <span className="font-display text-[1.35rem] tracking-tight">
-              Maison{" "}
-              <span className="text-[color:var(--gold)]">&amp;</span> Blade
+              Grow <span className="text-[color:var(--gold)]">&amp;</span> Grace
             </span>
           </Link>
 
@@ -79,15 +79,24 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            {user?.role === "ADMIN" && (
+              <Link
+                to="/admin"
+                className="relative flex items-center gap-1.5 text-sm text-muted-foreground transition-colors after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-[color:var(--gold)] after:transition-all after:duration-300 hover:text-foreground hover:after:w-full"
+                activeProps={{ className: "text-foreground font-medium after:w-full after:bg-[color:var(--gold)]" }}
+              >
+                <ShieldCheck className="h-3.5 w-3.5" /> Admin
+              </Link>
+            )}
           </nav>
 
           {/* Desktop auth actions + mobile burger */}
           <div className="flex items-center gap-2">
             {user ? (
               <>
-                <span className="hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm sm:flex">
+                <Link to="/profile" className="hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-secondary sm:flex">
                   <UserIcon className="h-3.5 w-3.5" /> {user.fullName.split(" ")[0]}
-                </span>
+                </Link>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -156,6 +165,16 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-secondary"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              <ShieldCheck className="h-4 w-4" /> Admin dashboard
+            </Link>
+          )}
         </nav>
 
         <div className="mt-2 border-t border-border px-4 pt-4">
@@ -170,6 +189,9 @@ export function Navbar() {
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
               </div>
+              <Button variant="outline" className="w-full" asChild onClick={() => setMenuOpen(false)}>
+                <Link to="/profile"><UserIcon className="mr-2 h-4 w-4" /> My profile</Link>
+              </Button>
               <Button
                 variant="outline"
                 className="w-full"
@@ -185,7 +207,7 @@ export function Navbar() {
           ) : (
             <div className="flex flex-col gap-2">
               <Button asChild className="w-full" onClick={() => setMenuOpen(false)}>
-                <Link to="/register">Join Maison &amp; Blade</Link>
+                <Link to="/register">Join Grow &amp; Grace</Link>
               </Button>
               <Button variant="outline" asChild className="w-full" onClick={() => setMenuOpen(false)}>
                 <Link to="/login">Sign in</Link>

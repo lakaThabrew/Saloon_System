@@ -90,7 +90,7 @@ function Home() {
             <div className="relative aspect-[0.9] overflow-hidden rounded-[1.5rem] bg-black/20 shadow-2xl shadow-black/25 sm:aspect-[1.05] md:aspect-[0.88]">
               <img
                 src={heroImage}
-                alt="Warmly lit Maison and Blade salon interior"
+                alt="Warmly lit Grow and Grace salon interior"
                 className="h-full w-full object-cover animate-image-drift"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-primary/5" />
@@ -258,7 +258,7 @@ function Home() {
 
           <ScrollReveal variant="left" className="md:order-1">
             <p className="text-[10px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-              The Maison method
+              The Grow &amp; Grace method
             </p>
             <h2 className="display-balance mt-3 max-w-xl font-display text-5xl leading-[1.02]">
               The best version of you still feels like <em>you.</em>

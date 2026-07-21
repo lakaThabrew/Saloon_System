@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Create account · Maison & Blade" }] }),
+  head: () => ({ meta: [{ title: "Create account · Grow & Grace" }] }),
   component: RegisterPage,
 });
 
@@ -98,8 +98,8 @@ function RegisterPage() {
                   <Scissors className="h-4 w-4" />
                 </span>
                 <span className="font-display text-xl">
-                  Maison <span className="text-[color:var(--gold)]">&amp;</span>{" "}
-                  Blade
+                  Grow <span className="text-[color:var(--gold)]">&amp;</span>{" "}
+                  Grace
                 </span>
               </div>
             </div>
@@ -131,14 +131,14 @@ function RegisterPage() {
             </div>
 
             <p className="relative text-xs text-primary-foreground/40">
-              © {new Date().getFullYear()} Maison &amp; Blade Studio
+              © {new Date().getFullYear()} Grow &amp; Grace Studio
             </p>
           </div>
 
           {/* Form panel */}
           <div className="flex flex-col justify-center p-8 sm:p-10">
             <h1 className="font-display text-3xl md:text-4xl">
-              Join Maison &amp; Blade.
+              Join Grow &amp; Grace.
             </h1>
             <p className="mt-2 text-muted-foreground">
               Create an account to book and track your visits.

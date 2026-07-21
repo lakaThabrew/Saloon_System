@@ -30,8 +30,8 @@ export function Footer() {
                 <Scissors className="h-4 w-4" />
               </span>
               <span className="font-display text-xl">
-                Maison <span className="text-[color:var(--gold)]">&amp;</span>{" "}
-                Blade
+                Grow <span className="text-[color:var(--gold)]">&amp;</span>{" "}
+                Grace
               </span>
             </div>
             <p className="mt-4 max-w-sm text-sm leading-6 text-primary-foreground/65">
@@ -73,7 +73,7 @@ export function Footer() {
                 <Facebook className="h-4 w-4" />
               </a>
               <a
-                href="mailto:hello@maisonblade.co"
+                href="mailto:hello@growandgrace.co"
                 aria-label="Email"
                 className="grid h-9 w-9 place-items-center rounded-full border border-primary-foreground/15 transition-all duration-300 hover:scale-110 hover:border-[color:var(--gold)] hover:bg-[color:var(--gold)]/10 hover:text-[color:var(--gold)]"
               >
@@ -84,7 +84,7 @@ export function Footer() {
         </div>
 
         <div className="flex items-center justify-between border-t border-primary-foreground/10 px-4 py-4 text-xs text-primary-foreground/45 sm:px-8">
-          © {new Date().getFullYear()} Maison &amp; Blade Studio. All rights
+          © {new Date().getFullYear()} Grow &amp; Grace Studio. All rights
           reserved.
         </div>
       </footer>
