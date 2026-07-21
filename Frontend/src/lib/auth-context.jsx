@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { SERVICES, STAFF } from "./salon-data";
 
 /**
  * Auth + appointments store.
