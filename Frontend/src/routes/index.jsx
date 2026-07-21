@@ -3,14 +3,16 @@ import { ArrowRight, Sparkles, Clock, ShieldCheck, Star } from "lucide-react";
 import heroImage from "@/assets/salon-hero.jpg";
 import { SiteLayout } from "@/components/salon/Layout";
 import { Button } from "@/components/ui/button";
-import { SERVICES, STAFF } from "@/lib/salon-data";
+import { useServices, useStaff } from "@/lib/api";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
 
 function Home() {
-  const featured = SERVICES.slice(0, 4);
+  const { data: services = [], isLoading: isLoadingServices } = useServices();
+  const { data: staff = [], isLoading: isLoadingStaff } = useStaff();
+  const featured = services.slice(0, 4);
   return (
     <SiteLayout>
       {/* Hero */}
@@ -105,37 +107,41 @@ function Home() {
             See all
           </Link>
         </div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((s) => (
-            <div
-              key={s.id}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-md"
-            >
-              <div className="aspect-[4/3] w-full overflow-hidden">
-                <img
-                  src={s.imageUrl}
-                  alt={s.serviceName}
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-5">
-                <span className="text-xs uppercase tracking-widest text-muted-foreground">
-                  {s.category}
-                </span>
-                <h3 className="mt-2 font-display text-xl">{s.serviceName}</h3>
-                <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                  <span>{s.durationMinutes} min</span>
-                  <span className="rounded-full bg-secondary px-2 py-0.5 text-xs uppercase text-secondary-foreground">
-                    {s.targetGender}
+        {isLoadingServices ? (
+          <div className="mt-10 py-10 text-center text-muted-foreground">Loading services...</div>
+        ) : (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {featured.map((s) => (
+              <div
+                key={s.id}
+                className="group overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-md"
+              >
+                <div className="aspect-[4/3] w-full overflow-hidden">
+                  <img
+                    src={s.imageUrl}
+                    alt={s.serviceName}
+                    width={1200}
+                    height={900}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-5">
+                  <span className="text-xs uppercase tracking-widest text-muted-foreground">
+                    {s.category}
                   </span>
+                  <h3 className="mt-2 font-display text-xl">{s.serviceName}</h3>
+                  <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
+                    <span>{s.durationMinutes} min</span>
+                    <span className="rounded-full bg-secondary px-2 py-0.5 text-xs uppercase text-secondary-foreground">
+                      {s.targetGender}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Team */}
@@ -143,21 +149,25 @@ function Home() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">The Team</p>
           <h2 className="mt-2 font-display text-3xl md:text-4xl">Hands you'll want to sit with.</h2>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {STAFF.map((m) => (
-              <div key={m.id} className="rounded-2xl bg-card p-6">
-                <div className="grid h-16 w-16 place-items-center rounded-full bg-accent font-display text-2xl text-accent-foreground">
-                  {m.fullName
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
+          {isLoadingStaff ? (
+            <div className="mt-10 py-10 text-center text-muted-foreground">Loading staff...</div>
+          ) : (
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {staff.map((m) => (
+                <div key={m.id} className="rounded-2xl bg-card p-6">
+                  <div className="grid h-16 w-16 place-items-center rounded-full bg-accent font-display text-2xl text-accent-foreground">
+                    {m.fullName
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")}
+                  </div>
+                  <h3 className="mt-4 font-medium">{m.fullName}</h3>
+                  <p className="text-sm text-muted-foreground">{m.specialization}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">{m.experienceYears}+ years</p>
                 </div>
-                <h3 className="mt-4 font-medium">{m.fullName}</h3>
-                <p className="text-sm text-muted-foreground">{m.specialization}</p>
-                <p className="mt-1 text-xs text-muted-foreground">{m.experienceYears}+ years</p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

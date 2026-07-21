@@ -5,7 +5,7 @@ import { z } from "zod";
 import { SiteLayout } from "@/components/salon/Layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SERVICES, STAFF, generateSlotsFor } from "@/lib/salon-data";
+import { useServices, useStaff, useStaffSlots } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -46,23 +46,21 @@ function BookingPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const { data: services = [], isLoading: isLoadingServices } = useServices();
+  const { data: staffList = [], isLoading: isLoadingStaff } = useStaff();
+  const { data: slots = [], isLoading: isLoadingSlots } = useStaffSlots(staffId, date);
+
   const selectedServices = useMemo(
-    () => SERVICES.filter((s) => serviceIds.includes(s.id)),
-    [serviceIds],
+    () => services.filter((s) => serviceIds.includes(s.id)),
+    [serviceIds, services],
   );
   const totalMinutes = selectedServices.reduce((a, s) => a + s.durationMinutes, 0);
 
   // Staff whose skill list covers every selected service.
   const availableStaff = useMemo(() => {
-    if (serviceIds.length === 0) return STAFF;
-    return STAFF.filter((st) => serviceIds.every((id) => st.serviceIds.includes(id)));
-  }, [serviceIds]);
-
-  // Mock replacement for GET /api/staff/{id}/slots?date=...
-  const slots = useMemo(() => {
-    if (!staffId) return [];
-    return generateSlotsFor(staffId, date);
-  }, [staffId, date]);
+    if (serviceIds.length === 0) return staffList;
+    return staffList.filter((st) => serviceIds.every((id) => st.serviceIds.includes(id)));
+  }, [serviceIds, staffList]);
 
   useEffect(() => {
     setSlotId(undefined);
@@ -121,41 +119,45 @@ function BookingPage() {
           {/* Step 1 - Services (multi-select) */}
           <Step number={1} title="Choose one or more services" complete={serviceIds.length > 0}>
             <div className="grid gap-3 sm:grid-cols-2">
-              {SERVICES.map((s) => {
-                const active = serviceIds.includes(s.id);
-                return (
-                  <button
-                    key={s.id}
-                    onClick={() => toggleService(s.id)}
-                    className={cn(
-                      "flex gap-3 rounded-xl border p-3 text-left transition-all",
-                      active
-                        ? "border-primary ring-2 ring-primary/20"
-                        : "border-border hover:border-primary/40",
-                    )}
-                  >
-                    <img
-                      src={s.imageUrl}
-                      alt=""
-                      width={80}
-                      height={80}
-                      loading="lazy"
-                      className="h-16 w-16 shrink-0 rounded-lg object-cover"
-                    />
+              {isLoadingServices ? (
+                <div className="p-4 text-sm text-muted-foreground">Loading services...</div>
+              ) : (
+                services.map((s) => {
+                  const active = serviceIds.includes(s.id);
+                  return (
+                    <button
+                      key={s.id}
+                      onClick={() => toggleService(s.id)}
+                      className={cn(
+                        "flex gap-3 rounded-xl border p-3 text-left transition-all",
+                        active
+                          ? "border-primary ring-2 ring-primary/20"
+                          : "border-border hover:border-primary/40",
+                      )}
+                    >
+                      <img
+                        src={s.imageUrl}
+                        alt=""
+                        width={80}
+                        height={80}
+                        loading="lazy"
+                        className="h-16 w-16 shrink-0 rounded-lg object-cover"
+                      />
 
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs uppercase tracking-widest text-muted-foreground">
-                        {s.category}
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs uppercase tracking-widest text-muted-foreground">
+                          {s.category}
+                        </div>
+                        <div className="mt-0.5 truncate font-display text-base">{s.serviceName}</div>
+                        <div className="mt-0.5 text-xs text-muted-foreground">
+                          {s.durationMinutes} min · {s.targetGender}
+                        </div>
                       </div>
-                      <div className="mt-0.5 truncate font-display text-base">{s.serviceName}</div>
-                      <div className="mt-0.5 text-xs text-muted-foreground">
-                        {s.durationMinutes} min · {s.targetGender}
-                      </div>
-                    </div>
-                    {active && <Check className="h-4 w-4 shrink-0 text-primary" />}
-                  </button>
-                );
-              })}
+                      {active && <Check className="h-4 w-4 shrink-0 text-primary" />}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </Step>
 
@@ -166,7 +168,9 @@ function BookingPage() {
             complete={!!staffId}
             disabled={serviceIds.length === 0}
           >
-            {availableStaff.length === 0 ? (
+            {isLoadingStaff ? (
+              <div className="p-4 text-sm text-muted-foreground">Loading staff...</div>
+            ) : availableStaff.length === 0 ? (
               <p className="text-sm text-muted-foreground">
                 No stylist covers every selected service — please adjust your selection.
               </p>
@@ -215,26 +219,32 @@ function BookingPage() {
               </label>
             </div>
             <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
-              {slots.map((slot) => {
-                const disabled = slot.status !== "AVAILABLE";
-                return (
-                  <button
-                    key={slot.id}
-                    disabled={disabled}
-                    onClick={() => setSlotId(slot.id)}
-                    className={cn(
-                      "rounded-md border py-2 text-sm transition-colors",
-                      slotId === slot.id
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : disabled
-                          ? "cursor-not-allowed border-dashed border-border/60 bg-muted/40 text-muted-foreground/50 line-through"
-                          : "border-border bg-card hover:border-primary/40",
-                    )}
-                  >
-                    {slot.startTime}
-                  </button>
-                );
-              })}
+              {isLoadingSlots ? (
+                <div className="col-span-3 p-2 text-sm text-muted-foreground">Loading slots...</div>
+              ) : slots.length === 0 && staffId ? (
+                <div className="col-span-3 p-2 text-sm text-muted-foreground">No slots available.</div>
+              ) : (
+                slots.map((slot) => {
+                  const disabled = slot.status !== "AVAILABLE";
+                  return (
+                    <button
+                      key={slot.id}
+                      disabled={disabled}
+                      onClick={() => setSlotId(slot.id)}
+                      className={cn(
+                        "rounded-md border py-2 text-sm transition-colors",
+                        slotId === slot.id
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : disabled
+                            ? "cursor-not-allowed border-dashed border-border/60 bg-muted/40 text-muted-foreground/50 line-through"
+                            : "border-border bg-card hover:border-primary/40",
+                      )}
+                    >
+                      {slot.startTime}
+                    </button>
+                  );
+                })
+              )}
             </div>
           </Step>
 
@@ -250,7 +260,7 @@ function BookingPage() {
                 </div>
                 <div className="mt-2 flex justify-between">
                   <span className="text-muted-foreground">Stylist</span>
-                  <span>{STAFF.find((s) => s.id === staffId).fullName}</span>
+                  <span>{staffList.find((s) => s.id === staffId)?.fullName}</span>
                 </div>
                 <div className="mt-2 flex justify-between">
                   <span className="text-muted-foreground">When</span>

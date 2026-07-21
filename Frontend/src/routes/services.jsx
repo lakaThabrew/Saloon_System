@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Clock, Users } from "lucide-react";
 import { SiteLayout } from "@/components/salon/Layout";
 import { Button } from "@/components/ui/button";
-import { CATEGORIES, SERVICES } from "@/lib/salon-data";
+import { CATEGORIES } from "@/lib/salon-data";
+import { useServices } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/services")({
@@ -21,7 +22,8 @@ export const Route = createFileRoute("/services")({
 
 function ServicesPage() {
   const [cat, setCat] = useState("ALL");
-  const filtered = cat === "ALL" ? SERVICES : SERVICES.filter((s) => s.category === cat);
+  const { data: services = [], isLoading } = useServices();
+  const filtered = cat === "ALL" ? services : services.filter((s) => s.category === cat);
 
   return (
     <SiteLayout>
@@ -51,49 +53,53 @@ function ServicesPage() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((s) => (
-            <article
-              key={s.id}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-md"
-            >
-              <div className="aspect-[4/3] w-full overflow-hidden">
-                <img
-                  src={s.imageUrl}
-                  alt={s.serviceName}
-                  width={1200}
-                  height={900}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-secondary px-2 py-0.5 text-xs uppercase tracking-wide text-secondary-foreground">
-                    {s.category}
-                  </span>
-                  <span className="rounded-full border border-border px-2 py-0.5 text-xs uppercase text-muted-foreground">
-                    {s.targetGender}
-                  </span>
+        {isLoading ? (
+          <div className="py-16 text-center text-muted-foreground">Loading services...</div>
+        ) : (
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((s) => (
+              <article
+                key={s.id}
+                className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-md"
+              >
+                <div className="aspect-[4/3] w-full overflow-hidden">
+                  <img
+                    src={s.imageUrl}
+                    alt={s.serviceName}
+                    width={1200}
+                    height={900}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
                 </div>
-                <h3 className="mt-3 font-display text-xl">{s.serviceName}</h3>
-                <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.description}</p>
-                <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
-                  <span className="flex items-center gap-1.5 text-muted-foreground">
-                    <Clock className="h-4 w-4" /> {s.durationMinutes} min
-                  </span>
-                  <Button size="sm" asChild>
-                    <Link to="/booking" search={{ service: s.id }}>
-                      Book
-                    </Link>
-                  </Button>
+                <div className="flex flex-1 flex-col p-6">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-secondary px-2 py-0.5 text-xs uppercase tracking-wide text-secondary-foreground">
+                      {s.category}
+                    </span>
+                    <span className="rounded-full border border-border px-2 py-0.5 text-xs uppercase text-muted-foreground">
+                      {s.targetGender}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-display text-xl">{s.serviceName}</h3>
+                  <p className="mt-2 flex-1 text-sm text-muted-foreground">{s.description}</p>
+                  <div className="mt-5 flex items-center justify-between border-t border-border pt-4 text-sm">
+                    <span className="flex items-center gap-1.5 text-muted-foreground">
+                      <Clock className="h-4 w-4" /> {s.durationMinutes} min
+                    </span>
+                    <Button size="sm" asChild>
+                      <Link to="/booking" search={{ service: s.id }}>
+                        Book
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
 
-        {filtered.length === 0 && (
+        {!isLoading && filtered.length === 0 && (
           <div className="flex flex-col items-center gap-2 py-16 text-center text-muted-foreground">
             <Users className="h-6 w-6" />
             <p>No services in this category yet.</p>
