@@ -11,4 +11,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
    @Query("SELECT a FROM Appointment a WHERE a.slot.staff.id = :staffId")
     List<Appointment> findByStaffId(Integer staffId);
+
+   @Query("""
+           SELECT DISTINCT a FROM Appointment a
+           JOIN FETCH a.customer
+           JOIN FETCH a.slot slot
+           JOIN FETCH slot.staff
+           LEFT JOIN FETCH a.services
+           ORDER BY a.id DESC
+           """)
+   List<Appointment> findAllForAdmin();
 }

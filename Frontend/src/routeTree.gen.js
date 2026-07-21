@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BookingRouteImport } from './routes/booking'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -18,6 +19,11 @@ import { Route as ServicesRouteImport } from './routes/services'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+})
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 })
 const BookingRoute = BookingRouteImport.update({
@@ -43,6 +49,7 @@ const ServicesRoute = ServicesRouteImport.update({
 
 const rootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   BookingRoute: BookingRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,

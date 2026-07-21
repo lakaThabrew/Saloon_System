@@ -5,6 +5,7 @@ import {
   LogOut,
   Menu,
   Scissors,
+  ShieldCheck,
   User as UserIcon,
   X,
 } from "lucide-react";
@@ -79,6 +80,15 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            {user?.role === "ADMIN" && (
+              <Link
+                to="/admin"
+                className="relative flex items-center gap-1.5 text-sm text-muted-foreground transition-colors after:absolute after:-bottom-2 after:left-0 after:h-px after:w-0 after:bg-[color:var(--gold)] after:transition-all after:duration-300 hover:text-foreground hover:after:w-full"
+                activeProps={{ className: "text-foreground font-medium after:w-full after:bg-[color:var(--gold)]" }}
+              >
+                <ShieldCheck className="h-3.5 w-3.5" /> Admin
+              </Link>
+            )}
           </nav>
 
           {/* Desktop auth actions + mobile burger */}
@@ -156,6 +166,16 @@ export function Navbar() {
               {l.label}
             </Link>
           ))}
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center gap-2 rounded-xl px-4 py-3 text-base font-medium transition-colors hover:bg-secondary"
+              activeProps={{ className: "bg-secondary text-foreground" }}
+            >
+              <ShieldCheck className="h-4 w-4" /> Admin dashboard
+            </Link>
+          )}
         </nav>
 
         <div className="mt-2 border-t border-border px-4 pt-4">
