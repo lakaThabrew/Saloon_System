@@ -105,6 +105,12 @@ export function AuthProvider({ children }) {
     setUser(null);
   }
 
+  function updateSession(profile) {
+    const next = { ...user, ...profile };
+    write(SESSION_KEY, next);
+    setUser(next);
+  }
+
   async function bookAppointment(req) {
     if (!user) throw new Error("Please sign in to book.");
     
@@ -171,7 +177,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, appointments, login, register, logout, bookAppointment, cancelAppointment }}
+      value={{ user, appointments, login, register, logout, updateSession, bookAppointment, cancelAppointment }}
     >
       {children}
     </AuthContext.Provider>

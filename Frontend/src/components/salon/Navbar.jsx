@@ -95,9 +95,9 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             {user ? (
               <>
-                <span className="hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm sm:flex">
+                <Link to="/profile" className="hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:bg-secondary sm:flex">
                   <UserIcon className="h-3.5 w-3.5" /> {user.fullName.split(" ")[0]}
-                </span>
+                </Link>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -190,6 +190,9 @@ export function Navbar() {
                   <p className="text-xs text-muted-foreground">{user.email}</p>
                 </div>
               </div>
+              <Button variant="outline" className="w-full" asChild onClick={() => setMenuOpen(false)}>
+                <Link to="/profile"><UserIcon className="mr-2 h-4 w-4" /> My profile</Link>
+              </Button>
               <Button
                 variant="outline"
                 className="w-full"
