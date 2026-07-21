@@ -26,8 +26,8 @@ const API_BASE = "http://localhost:8080/api";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "My profile · Maison & Blade" },
-      { name: "description", content: "Manage your Maison & Blade profile and preferences." },
+      { title: "My profile · Grow & Grace" },
+      { name: "description", content: "Manage your Grow & Grace profile and preferences." },
     ],
   }),
   component: ProfilePage,
@@ -81,7 +81,7 @@ function ProfilePage() {
         <div className="absolute -left-24 top-0 h-72 w-72 rounded-full bg-[color:var(--gold)]/15 blur-3xl" />
         <div className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-8 sm:py-16">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground"><Sparkles className="h-4 w-4 text-[color:var(--gold)]" /> Your Maison & Blade <span className="text-[color:var(--gold)]">/</span> Profile</div>
+          <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground"><Sparkles className="h-4 w-4 text-[color:var(--gold)]" /> Your Grow &amp; Grace <span className="text-[color:var(--gold)]">/</span> Profile</div>
           <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-center">
             <Avatar name={profile.fullName} large />
             <div><div className="flex flex-wrap items-center gap-3"><h1 className="font-display text-4xl sm:text-5xl">{profile.fullName}</h1>{profile.role === "ADMIN" && <Badge className="gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Administrator</Badge>}</div><p className="mt-2 text-muted-foreground">A little space for the details that make every visit feel personal.</p></div>
@@ -93,7 +93,7 @@ function ProfilePage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <MiniStat icon={CalendarDays} value={upcoming} label="Upcoming visits" />
           <MiniStat icon={Heart} value={myAppointments.length} label="Bookings made" tone="gold" />
-          <MiniStat icon={CheckCircle2} value={formatMemberSince(profile.createdAt)} label="Maison member since" tone="plum" text />
+          <MiniStat icon={CheckCircle2} value={formatMemberSince(profile.createdAt)} label="Grow & Grace member since" tone="plum" text />
         </div>
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">

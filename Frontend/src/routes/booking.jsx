@@ -29,7 +29,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/booking")({
   head: () => ({
     meta: [
-      { title: "Book an appointment · Maison & Blade" },
+      { title: "Book an appointment · Grow & Grace" },
       {
         name: "description",
         content:

@@ -9,7 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
-  head: () => ({ meta: [{ title: "Sign in · Maison & Blade" }] }),
+  head: () => ({ meta: [{ title: "Sign in · Grow & Grace" }] }),
   component: LoginPage,
 });
 
@@ -49,8 +49,8 @@ function LoginPage() {
                   <Scissors className="h-4 w-4" />
                 </span>
                 <span className="font-display text-xl">
-                  Maison <span className="text-[color:var(--gold)]">&amp;</span>{" "}
-                  Blade
+                  Grow <span className="text-[color:var(--gold)]">&amp;</span>{" "}
+                  Grace
                 </span>
               </div>
             </div>
@@ -67,7 +67,7 @@ function LoginPage() {
             </div>
 
             <p className="relative text-xs text-primary-foreground/40">
-              © {new Date().getFullYear()} Maison &amp; Blade Studio
+              © {new Date().getFullYear()} Grow &amp; Grace Studio
             </p>
           </div>
 

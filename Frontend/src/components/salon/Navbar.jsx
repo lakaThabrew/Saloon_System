@@ -62,8 +62,7 @@ export function Navbar() {
               <Scissors className="h-4 w-4" />
             </span>
             <span className="font-display text-[1.35rem] tracking-tight">
-              Maison{" "}
-              <span className="text-[color:var(--gold)]">&amp;</span> Blade
+              Grow <span className="text-[color:var(--gold)]">&amp;</span> Grace
             </span>
           </Link>
 
@@ -208,7 +207,7 @@ export function Navbar() {
           ) : (
             <div className="flex flex-col gap-2">
               <Button asChild className="w-full" onClick={() => setMenuOpen(false)}>
-                <Link to="/register">Join Maison &amp; Blade</Link>
+                <Link to="/register">Join Grow &amp; Grace</Link>
               </Button>
               <Button variant="outline" asChild className="w-full" onClick={() => setMenuOpen(false)}>
                 <Link to="/login">Sign in</Link>
