@@ -7,7 +7,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   plugins: [
     tsconfigPaths(),
-    TanStackRouterVite(),
+    TanStackRouterVite({
+      target: 'react',
+      disableTypes: true,
+      generatedRouteTree: './src/routeTree.gen.js'
+    }),
     react(),
     tailwindcss()
   ]

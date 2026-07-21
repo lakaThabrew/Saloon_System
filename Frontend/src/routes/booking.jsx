@@ -6,7 +6,7 @@ import { SiteLayout } from "@/components/salon/Layout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SERVICES, STAFF, generateSlotsFor } from "@/lib/salon-data";
-import { useAuth, cacheSlots } from "@/lib/auth-context";
+import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -61,9 +61,7 @@ function BookingPage() {
   // Mock replacement for GET /api/staff/{id}/slots?date=...
   const slots = useMemo(() => {
     if (!staffId) return [];
-    const generated = generateSlotsFor(staffId, date);
-    cacheSlots(generated);
-    return generated;
+    return generateSlotsFor(staffId, date);
   }, [staffId, date]);
 
   useEffect(() => {

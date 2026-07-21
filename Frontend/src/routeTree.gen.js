@@ -8,38 +8,38 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as ServicesRouteImport } from "./routes/services";
-import { Route as RegisterRouteImport } from "./routes/register";
-import { Route as LoginRouteImport } from "./routes/login";
-import { Route as BookingRouteImport } from "./routes/booking";
-import { Route as IndexRouteImport } from "./routes/index";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as BookingRouteImport } from './routes/booking'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ServicesRouteImport } from './routes/services'
 
-const ServicesRoute = ServicesRouteImport.update({
-  id: "/services",
-  path: "/services",
-  getParentRoute: () => rootRouteImport,
-});
-const RegisterRoute = RegisterRouteImport.update({
-  id: "/register",
-  path: "/register",
-  getParentRoute: () => rootRouteImport,
-});
-const LoginRoute = LoginRouteImport.update({
-  id: "/login",
-  path: "/login",
-  getParentRoute: () => rootRouteImport,
-});
-const BookingRoute = BookingRouteImport.update({
-  id: "/booking",
-  path: "/booking",
-  getParentRoute: () => rootRouteImport,
-});
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-});
+})
+const BookingRoute = BookingRouteImport.update({
+  id: '/booking',
+  path: '/booking',
+  getParentRoute: () => rootRouteImport,
+})
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+})
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+})
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+})
 
 const rootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -47,5 +47,5 @@ const rootRouteChildren = {
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   ServicesRoute: ServicesRoute,
-};
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes();
+}
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)
