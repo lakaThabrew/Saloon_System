@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { SERVICES, STAFF } from "./salon-data";
 
 /**
  * Auth + appointments store.
@@ -185,10 +184,4 @@ export function useAuth() {
   return ctx;
 }
 
-/* Slot cache — populated by pages that fetch slots; used by bookAppointment
- * to resolve date/time when the mock "creates" an appointment. */
-const slotCache = new Map();
-export function cacheSlots(slots) {
-  for (const s of slots)
-    slotCache.set(s.id, { date: s.date, startTime: s.startTime, endTime: s.endTime });
-}
+
