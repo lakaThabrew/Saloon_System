@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "staff")
+@PrimaryKeyJoinColumn(name = "user_id")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
