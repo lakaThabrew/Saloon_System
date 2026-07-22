@@ -1,5 +1,6 @@
 package com.salonbooking.salonbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.salonbooking.salonbackend.enums.TimeSlotStatus;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "time_slot")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TimeSlot {
 
     @Id
@@ -17,6 +19,7 @@ public class TimeSlot {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "staff_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "services"})
     private Staff staff;
 
     @Column(name = "slot_date")

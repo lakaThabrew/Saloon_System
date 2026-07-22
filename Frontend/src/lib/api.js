@@ -44,7 +44,11 @@ export function useStaff() {
     queryFn: async () => {
       const res = await fetch(`${API_BASE}/staff`);
       if (!res.ok) throw new Error("Failed to fetch staff");
-      return res.json();
+      const data = await res.json();
+      return data.map((st) => ({
+        ...st,
+        serviceIds: st.serviceIds || (st.services ? st.services.map((s) => s.id) : []),
+      }));
     },
   });
 }

@@ -1,5 +1,6 @@
 package com.salonbooking.salonbackend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.salonbooking.salonbackend.enums.Gender;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Staff extends User{
 
     @Enumerated(EnumType.STRING)

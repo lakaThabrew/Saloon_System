@@ -81,9 +81,10 @@ function BookingPage() {
   // Staff whose skill list covers every selected service.
   const availableStaff = useMemo(() => {
     if (serviceIds.length === 0) return staffList;
-    return staffList.filter((st) =>
-      serviceIds.every((id) => st.serviceIds.includes(id)),
-    );
+    return staffList.filter((st) => {
+      const ids = st.serviceIds || st.services?.map((s) => s.id) || [];
+      return serviceIds.every((id) => ids.includes(id));
+    });
   }, [serviceIds, staffList]);
 
   useEffect(() => {

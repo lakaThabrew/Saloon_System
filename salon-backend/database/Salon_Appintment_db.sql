@@ -1,5 +1,7 @@
 
 
+DROP TABLE IF EXISTS appointment_service, review, appointment, time_slot, staff_schedule, staff_service, customer, staff, service, users CASCADE;
+
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
